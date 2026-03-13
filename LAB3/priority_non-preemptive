@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+int main() {
+     printf("USN:1BF24CS317");
+    int n = 5;
+
+    float tat=0;
+    float wt=0;
+    int process_id[5] = {1,2,3,4,5};
+    int arrival_time[5];
+    int burst_time[5];
+    int priority[5] ;
+    printf("enter at,bt,priority");
+    for(int i=0;i<n;i++){
+        scanf("%d",&arrival_time[i]);
+        scanf("%d",&burst_time[i]);
+        scanf("%d",&priority[i]);
+    }
+    for(int i=0;i<n;i++){
+
+    }
+
+    int completion_time[5], turnaround_time[5], waiting_time[5];
+    bool completed[5];
+
+    int current_time = 0;
+    int completed_count = 0;
+
+    for(int i = 0; i < n; i++)
+        completed[i] = false;
+
+    while(completed_count < n) {
+
+        int highest_priority = 9999;
+        int selected_process = -1;
+
+        for(int i = 0; i < n; i++) {
+            if(arrival_time[i] <= current_time && completed[i] == false) {
+                if(priority[i] < highest_priority) {
+                    highest_priority = priority[i];
+                    selected_process = i;
+                }
+            }
+        }
+
+        if(selected_process == -1) {
+            current_time++;
+        }
+        else {
+            int start_time = current_time;
+
+            completion_time[selected_process] =
+                start_time + burst_time[selected_process];
+
+            turnaround_time[selected_process] =
+                completion_time[selected_process] -
+                arrival_time[selected_process];
+
+            waiting_time[selected_process] =
+                turnaround_time[selected_process] -
+                burst_time[selected_process];
+
+            current_time = completion_time[selected_process];
+
+            completed[selected_process] = true;
+            completed_count++;
+        }
+    }
+
+    printf("\nProcess\tAT\tBT\tPriority\tCT\tWT\tTAT\n");
+
+    for(int i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+        process_id[i],
+        arrival_time[i],
+        burst_time[i],
+        priority[i],
+        completion_time[i],
+        waiting_time[i],
+        turnaround_time[i]);
+    }
+    for(int i=0;i<n;i++){
+        tat+=turnaround_time[i];
+        wt+=waiting_time[i];
+    }
+    tat/=n;
+    wt/=n;
+    printf("avg_tat is %f avg_wt is %f ",tat,wt);
+
+    return 0;
+}
