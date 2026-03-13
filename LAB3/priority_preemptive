@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+int main() {
+    int n;
+    printf("1BF24CS317");
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    int pid[n], at[n], bt[n], pr[n];
+    int rt[n], ct[n], tat[n], wt[n];
+
+    for(int i = 0; i < n; i++) {
+        pid[i] = i + 1;
+        printf("Enter arrival time, burst time and priority for P%d: ", pid[i]);
+        scanf("%d %d %d", &at[i], &bt[i], &pr[i]);
+        rt[i] = bt[i];
+    }
+
+    int current_time = 0;
+    int completed = 0;
+
+    while(completed < n) {
+        int highest_priority = 9999;
+        int selected = -1;
+
+        for(int i = 0; i < n; i++) {
+            if(at[i] <= current_time && rt[i] > 0) {
+                if(pr[i] < highest_priority) {
+                    highest_priority = pr[i];
+                    selected = i;
+                }
+            }
+        }
+
+        if(selected == -1) {
+            current_time++;
+        }
+        else {
+            rt[selected]--;
+            current_time++;
+
+            if(rt[selected] == 0) {
+                ct[selected] = current_time;
+
+                tat[selected] = ct[selected] - at[selected];
+
+                wt[selected] = tat[selected] - bt[selected];
+
+                completed++;
+            }
+        }
+    }
+
+    printf("\nPID\tAT\tBT\tPR\tCT\tTAT\tWT\n");
+
+    float avg_tat = 0, avg_wt = 0;
+
+    for(int i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\t%d\n",
+               pid[i], at[i], bt[i], pr[i], ct[i], tat[i], wt[i]);
+
+        avg_tat += tat[i];
+        avg_wt += wt[i];
+    }
+
+    printf("\tat_avg = %f", avg_tat / n);
+    printf("\nwt_avg = %f\n", avg_wt / n);
+
+    return 0;
+}
